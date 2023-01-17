@@ -1,0 +1,20 @@
+{
+    "id": "crm-customerio",
+    "version": 1,
+    "slack_channel_code": "mg-crm",
+    "description": "[Credit] <@USER_ID>, Adelanto Collection campaign is now live with <action_output> users",
+    "query": " with salary_advance_data as ( select user_id, days_past_due from credit.salary_advance_loanbook where loan_status = 'DELINQUENT' ) select sa.user_id, kyc.email, sa.days_past_due as adelanto_days_past_due from salary_advance_data sa left join klar_pii.db_kyc_public_user_kyc kyc on sa.user_id=kyc.id where adelanto_days_past_due <= 7 order by kyc.email",
+    "segment_id": "1512",
+    "attributes": "[adelanto_days_past_due]",
+    "control_type": "action",
+    "action": "send_campaign",
+    "team": "crm",
+    "business": "",
+    "name": "",
+    "motive": "",
+    "every": null,
+    "unit": "day",
+    "at": ""
+  }
+
+
