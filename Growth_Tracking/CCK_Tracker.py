@@ -4,22 +4,32 @@ import time
 import psycopg2
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
-import gspread_dataframe as gd
 import datetime
+import gspread_dataframe as gd
+import os
+import json
 
-
-affiliation_list = ['AdAction', 'Destacame', 'Digital Turbine', 'Influencers', 'Klar', 'Liftoff', 'Leadgenios', 'Lychee', 'Mapendo', 'MiQ', 'Oppizi', 'Snapchat', 'Taboola', 'Offline']
-overall_row = 587
-cck_row = 73
+affiliation_list = ['AdAction', 'Destacame', 'Digital Turbine', 'Influencers', 'Klar', 'Leadgenios', 'Lychee', 'Mapendo', 'MiQ', 'Oppizi', 'Snapchat', 'Taboola', 'Liftoff', 'Offline']
+row_overall = 615
+row_cck = 101
 # =============================================================================================================================
 # =============================================================================================================================
 # ======================================================== DIRECTORIES ========================================================
 # DB Information
-db_credentials = open('/Users/gabrielreynoso/Documents/Queries/db_klarprod_connection.txt', 'r')
+# Read the database credentials and create database connection
+# f = open('C:\\Users\\Fernando Rojas\\PycharmProjects\\KLAR\\CCK Daily Tracker\\db_klarprod_connection.txt', 'r')
+# postgres_str = f.read()
+# f.close()
+# f_1 = open('C:\\Users\\Fernando Rojas\\PycharmProjects\\KLAR\\CCK Daily Tracker\\db_password.txt', 'r')
+# postgres_str_pass = f_1.read()
+# f_1.close()
 # Google Sheets API
 # Read and Load Credentials
-credentials = ServiceAccountCredentials.from_json_keyfile_name('/Users/gabrielreynoso/Documents/GoogleCredentials/gabo_credentials.json')
+# Google Credentials
+credentials = ServiceAccountCredentials.from_json_keyfile_name(os.environ['directory_to_credentials'])
 gc = gspread.authorize(credentials)
+
+
 # =============================================================================================================================
 # =============================================================================================================================
 # ========================================================= FUNCTIONS =========================================================
@@ -145,9 +155,9 @@ def funnel_channel_split(funnel_list: list, affiliation_channels: list) -> list:
             # Create an Affiliation column in order to summarize information
             step_aux['Affiliation'] = step_aux[affiliation_present_channels].sum(axis=1)
             # Create a presented view, the one present in CCK Tracker
-            step_aux_presented = step_aux[['Total', 'Organic', 'Facebook', 'Google', 'Referral', 'Affiliation', 'Apple Search','TikTok', 'ZoomD', 'Twitter']]
+            step_aux_presented = step_aux[['Total', 'Organic', 'Facebook', 'Google', 'Referral', 'Affiliation', 'Apple Search', 'TikTok', 'ZoomD', 'Twitter']]
             # Drop Affiliation column
-            step_aux = step_aux.drop('Affiliation', axis = 1)
+            step_aux = step_aux.drop('Affiliation', axis=1)
             # Logic to put together each Dataframe
             if step_name == 'first_purchase':
                 step_aux = step_aux.add_prefix('1P.')
@@ -159,10 +169,10 @@ def funnel_channel_split(funnel_list: list, affiliation_channels: list) -> list:
                 step_aux = step_aux.add_prefix('1P_C')
                 step_aux_presented = step_aux_presented.add_prefix('1P_C')
             else:
-                step_aux = step_aux.add_prefix(step_name[0]+'.')
-                step_aux_presented = step_aux_presented.add_prefix(step_name[0]+'.')
+                step_aux = step_aux.add_prefix(step_name[0] + '.')
+                step_aux_presented = step_aux_presented.add_prefix(step_name[0] + '.')
             if freq_ == 'm':
-                if step_name in ['credit_first_p','cck_offers']:
+                if step_name in ['credit_first_p', 'cck_offers']:
                     m_cck_overall = pd.concat([m_cck_overall, step_aux], axis=1)
                     m_cck_overall_presented = pd.concat([m_cck_overall_presented, step_aux_presented], axis=1)
                 elif step_name in ['debit_fta']:
@@ -172,7 +182,7 @@ def funnel_channel_split(funnel_list: list, affiliation_channels: list) -> list:
                     m_funnel_overall = pd.concat([m_funnel_overall, step_aux], axis=1)
                     m_funnel_overall_presented = pd.concat([m_funnel_overall_presented, step_aux_presented], axis=1)
             else:
-                if step_name in ['credit_first_p','cck_offers']:
+                if step_name in ['credit_first_p', 'cck_offers']:
                     d_cck_overall = pd.concat([d_cck_overall, step_aux], axis=1)
                     d_cck_overall_presented = pd.concat([d_cck_overall_presented, step_aux_presented], axis=1)
                 elif step_name in ['debit_fta']:
@@ -187,13 +197,10 @@ def funnel_channel_split(funnel_list: list, affiliation_channels: list) -> list:
 
 # =============================================================================================================================
 # =============================================================================================================================
-# Read file
-postgres_str = db_credentials.read()
-# Close file
-db_credentials.close()
-cnx = create_engine(postgres_str)
+# cnx = create_engine(postgres_str % quote(postgres_str_pass))
+cnx = create_engine(os.environ['POSTGRES_CRED'])
 # Execute queries from file
-tables = execute_scripts_from_file('./Queries/CCk_Queries.sql', cnx)
+tables = execute_scripts_from_file('CCk_Queries.sql', cnx)
 # # Separate tables into dataframes
 overall, cck, debit_path, sms_confirmed, fta, debit_fta, first_p, cck_offers, credit_first_p, adjust, referral = tables
 # =============================================================================================================================
@@ -201,7 +208,7 @@ overall, cck, debit_path, sms_confirmed, fta, debit_fta, first_p, cck_offers, cr
 funnel = [('sms_confirmed', sms_confirmed), ('fta', fta), ('debit_fta', debit_fta), ('first_purchase', first_p), ('cck_offers', cck_offers), ('credit_first_p', credit_first_p)]
 # Overall metrics
 funnel_info = [overall, cck, debit_path]
-del tables, db_credentials, cnx, postgres_str
+del tables, cnx
 # =============================================================================================================================
 # ========================================================= REFERRALS =========================================================
 # Referrals manipulation
@@ -213,7 +220,7 @@ referrals_users.columns = ['user_id', 'referral']
 # =============================================================================================================================
 # Channel names normalization
 # Read the channel dictionary
-channel_df = pd.read_csv('/Users/gabrielreynoso/Documents/Channel_Dict/Channels.csv')
+channel_df = pd.read_csv('Channels.csv')
 # Create the channel dictionary
 channel_dict = channel_df.set_index('Tracker').to_dict()['Channel']
 # Map the channel dict into a new column
@@ -223,7 +230,7 @@ new_channels = adjust[adjust.Channel.isna()]['channel'].drop_duplicates()
 if new_channels.shape[0] > 0:
     print("The number of new channels is: " + str(new_channels.shape[0]))
     print(new_channels)
-    new_channels.to_csv('Users/gabrielreynoso/Documents/Channel_Dict/New_channels.csv', index=False)
+    new_channels.to_csv('New_channels.csv', index=False)
 else:
     del new_channels
 del channel_df, channel_dict
@@ -232,7 +239,8 @@ del channel_df, channel_dict
 # Add Adjust Info to the Funnel
 mapped_funnel = map_funnel(funnel, adjust, referrals_users)
 # Channel Split
-overall_m, overall_m_presented, cck_overall_m, cck_overall_m_presented, debit_overall_m, debit_overall_m_presented, overall_d, overall_d_presented, cck_overall_d, cck_overall_d_presented, debit_overall_d, debit_overall_d_presented = funnel_channel_split(mapped_funnel, affiliation_list)
+overall_m, overall_m_presented, cck_overall_m, cck_overall_m_presented, debit_overall_m, debit_overall_m_presented, overall_d, overall_d_presented, cck_overall_d, cck_overall_d_presented, debit_overall_d, debit_overall_d_presented = funnel_channel_split(
+    mapped_funnel, affiliation_list)
 # Add signup info to the funnel info_
 new_funnel_info = []
 for idx, table in enumerate(funnel_info):
@@ -247,17 +255,16 @@ funnel_daily_info, funnel_daily_cck_info, funnel_daily_debit_info = new_funnel_i
 cck_tracker = gc.open("[Growth] - CCK Tracker")
 # =============================================================================================================================
 last_two_mondays = (datetime.date.today() - datetime.timedelta(days=datetime.date.today().weekday()) - datetime.timedelta(days=7)).strftime('%m/%d/%Y')
-# last_two_mondays = '10/03/2022'
 # =============================================================================================================================
 # Overall metrics
-gd.set_with_dataframe(cck_tracker.worksheet("Tracker - Overall"), funnel_daily_info.loc[last_two_mondays:,:], row=overall_row, col=6, include_index=False, include_column_header=False)
-gd.set_with_dataframe(cck_tracker.worksheet("Tracker - Overall"), overall_d_presented.loc[last_two_mondays:,:], row=overall_row, col=21, include_index=False, include_column_header=False)
+gd.set_with_dataframe(cck_tracker.worksheet("Tracker - Overall"), funnel_daily_info.loc[last_two_mondays:, :], row=row_overall, col=6, include_index=False, include_column_header=False)
+gd.set_with_dataframe(cck_tracker.worksheet("Tracker - Overall"), overall_d_presented.loc[last_two_mondays:, :], row=row_overall, col=21, include_index=False, include_column_header=False)
 # CCK metrics
-gd.set_with_dataframe(cck_tracker.worksheet("Tracker - CCK"), funnel_daily_cck_info.loc[last_two_mondays:,:], row=cck_row, col=4, include_index=False, include_column_header=False)
-gd.set_with_dataframe(cck_tracker.worksheet("Tracker - CCK"), cck_overall_d_presented.loc[last_two_mondays:,:], row=cck_row, col=13, include_index=False, include_column_header=False)
+gd.set_with_dataframe(cck_tracker.worksheet("Tracker - CCK"), funnel_daily_cck_info.loc[last_two_mondays:, :], row=row_cck, col=4, include_index=False, include_column_header=False)
+gd.set_with_dataframe(cck_tracker.worksheet("Tracker - CCK"), cck_overall_d_presented.loc[last_two_mondays:, :], row=row_cck, col=13, include_index=False, include_column_header=False)
 # Debit Path
-gd.set_with_dataframe(cck_tracker.worksheet("Tracker - Debit Path"), funnel_daily_debit_info.loc[last_two_mondays:,:], row=cck_row, col=4, include_index=False, include_column_header=False)
-gd.set_with_dataframe(cck_tracker.worksheet("Tracker - Debit Path"), debit_overall_d_presented.loc[last_two_mondays:,:], row=cck_row, col=7, include_index=False, include_column_header=False)
+gd.set_with_dataframe(cck_tracker.worksheet("Tracker - Debit Path"), funnel_daily_debit_info.loc[last_two_mondays:, :], row=row_cck, col=4, include_index=False, include_column_header=False)
+gd.set_with_dataframe(cck_tracker.worksheet("Tracker - Debit Path"), debit_overall_d_presented.loc[last_two_mondays:, :], row=row_cck, col=7, include_index=False, include_column_header=False)
 # =============================================================================================================================
 # Affiliation Report
 gd.set_with_dataframe(cck_tracker.worksheet("Tracker - Channel View"), overall_d, row=2, include_index=True)
