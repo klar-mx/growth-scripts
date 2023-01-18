@@ -1,8 +1,18 @@
-
+# Exclude cache and ideas directories
 inc-2022-12-05/.DS_Store
 CRM/__pycache__/customer_io.cpython-310.pyc
-
 .idea/runConfigurations
 .idea/*
 *.xml
 .idea/growth-scripts.iml
+# Exclude CRM Business Logic Validation
+Business_Logic_Validation/CRM/*
+Business_Logic_Validation/.DS_Store
+.idea/misc.xml
+Cohort_Metrics/.DS_Store
+Ads_Analytics/Data/CrativeTagInfo_14092022.csv
+Ads_Analytics/.DS_Store
+.idea/misc.xml
+.DS_Store
+*.xml
+*.iml
