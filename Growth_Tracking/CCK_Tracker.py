@@ -71,6 +71,7 @@ def execute_scripts_from_file(filename, connection) -> list:
 def map_funnel(funnel: list, adjust_info: pd.DataFrame, referrals: pd.DataFrame) -> list:
     """
     Function to map adjust info to each user
+    :param referrals:
     :param funnel: List containing the dataframes with user along every step of the funnel
     :param adjust_info: Dataframe with the adjust information
     :return:
