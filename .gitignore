@@ -46,4 +46,5 @@ RFM/CRM_Analytics/Churned_Campaigns/Data/February_ChurnCampaign/*
 RFM/CRM_Analytics/Churned_Campaigns/Data/March_ChurnCampaign/*
 RFM/CRM_Analytics/Churned_Campaigns/Data/May_ChurnCampaign/*
 RFM/CRM_Analytics/Churned_Campaigns/Results/*
+# User_Behavior
 User_Behavior/OctoberUserBehaviorAnalysis.csv
