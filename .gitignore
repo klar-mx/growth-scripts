@@ -13,6 +13,37 @@ Cohort_Metrics/.DS_Store
 Ads_Analytics/Data/CrativeTagInfo_14092022.csv
 Ads_Analytics/.DS_Store
 .idea/misc.xml
-.DS_Store
 *.xml
 *.iml
+# All DS_Store
+*.DS_Store
+# All Pkl
+*.pkl
+# Radar Graphs
+User_Behavior/Radar_Graphs/*
+User_Behavior/Exports/*
+# Sandbox Chunks
+Sandbox/Chunks/*
+# Rewards
+Rewards/Cashback/Data/*
+Rewards/Cashback/Cashback_Payments/*
+# NPS WordCloud
+NPS/WordCloud/*
+/Rewards/Cashback/November2022_Experiment/Opt-In.csv
+# Query tester
+QueryTester/*
+# Rewards Cashback
+Rewards/ATM/Data/Transactions_Balance_09082022.csv
+Rewards/Cashback/August2022_Experiment/August2022_Experiment_Outputs/CashbackPayments.xlsx
+Rewards/Cashback/August2022_Experiment/August2022_Experiment_Outputs/OptIn_Results.xlsx
+Rewards/Cashback/October2022_Experiment/Cohorts.csv
+Rewards/Cashback/October2022_Experiment/Opt-In.csv
+Rewards/Cashback/September2022_Experiment/*
+# RFM CRM
+RFM/CRM_Analytics/Churned_Campaigns/Data/April_ChurnCampaign/*
+RFM/CRM_Analytics/Churned_Campaigns/Data/August_ChurnCampaign/*
+RFM/CRM_Analytics/Churned_Campaigns/Data/February_ChurnCampaign/*
+RFM/CRM_Analytics/Churned_Campaigns/Data/March_ChurnCampaign/*
+RFM/CRM_Analytics/Churned_Campaigns/Data/May_ChurnCampaign/*
+RFM/CRM_Analytics/Churned_Campaigns/Results/*
+User_Behavior/OctoberUserBehaviorAnalysis.csv
