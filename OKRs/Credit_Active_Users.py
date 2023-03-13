@@ -32,7 +32,7 @@ mau_credit = pd.DataFrame(columns=['starting_date', 'end_date', 'credit_maus'])
 # ========================================================================================================================================
 # Queries
 # =====================
-# REVENUE GENERATING USERS (LIGHT MAU)
+# CREDIT ACTIVE USERS
 # =====================
 credit_mau_query = '''
 with credit_mau as (select user_id
@@ -94,7 +94,7 @@ with credit_mau as (select user_id
 select
     '{start_date}' as starting_date,
     '{end_date}' as end_date,
-    count(user_id) as credit_maus
+    count(distinct user_id) as credit_maus
 from credit_mau
 '''
 # ========================================================================================================================================

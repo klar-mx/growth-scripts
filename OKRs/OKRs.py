@@ -65,7 +65,7 @@ select
     r.referrees*1.0/s.sms_confirmed as referral_virality,
     r.referrees as referrees,
     s.sms_confirmed as sms_confirmed,
-    r.date
+    '{start_date}' as date
 from referees_count as r
 join sms_confirmed_count as s on s.date = r.date
 '''

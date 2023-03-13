@@ -5,6 +5,8 @@ CRM/__pycache__/customer_io.cpython-310.pyc
 .idea/*
 *.xml
 .idea/growth-scripts.iml
+# Cohort Metrics
+Cohort_Metrics/Cohort_queries.ipynb
 # Exclude CRM Business Logic Validation
 Business_Logic_Validation/CRM/*
 Business_Logic_Validation/.DS_Store
@@ -48,3 +50,10 @@ RFM/CRM_Analytics/Churned_Campaigns/Data/May_ChurnCampaign/*
 RFM/CRM_Analytics/Churned_Campaigns/Results/*
 # User_Behavior
 User_Behavior/OctoberUserBehaviorAnalysis.csv
+Cohort_Metrics/Data/2023-02.xlsx
+Cohort_Metrics/Data/2023-01.xlsx
+.idea/growth-scripts.iml
+Rewards/KlarPlus/Monthly_DB/Raw_Cashback2023-01.csv
+Rewards/KlarPlus/Monthly_DB/Raw_ATM2023-01.csv
+Rewards/KlarPlus/Monthly_DB/Raw_ATM2023-02.csv
+Rewards/KlarPlus/Monthly_DB/Raw_Cashback2023-02.csv

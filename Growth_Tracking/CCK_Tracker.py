@@ -15,14 +15,7 @@ row_cck = 101
 # =============================================================================================================================
 # =============================================================================================================================
 # ======================================================== DIRECTORIES ========================================================
-# DB Information
-# Read the database credentials and create database connection
-# f = open('C:\\Users\\Fernando Rojas\\PycharmProjects\\KLAR\\CCK Daily Tracker\\db_klarprod_connection.txt', 'r')
-# postgres_str = f.read()
-# f.close()
-# f_1 = open('C:\\Users\\Fernando Rojas\\PycharmProjects\\KLAR\\CCK Daily Tracker\\db_password.txt', 'r')
-# postgres_str_pass = f_1.read()
-# f_1.close()
+
 # Google Sheets API
 # Read and Load Credentials
 # Google Credentials
